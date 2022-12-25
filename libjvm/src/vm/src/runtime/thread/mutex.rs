@@ -19,7 +19,7 @@ impl ReentrantMutex {
     /// todo: This function should really be documented
     pub unsafe fn uninitialized() -> ReentrantMutex {
         ReentrantMutex {
-            inner: mem::uninitialized(),
+            inner: MaybeUninit::uninit().assume_init(),
         }
     }
 

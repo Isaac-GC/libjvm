@@ -30,7 +30,7 @@ impl RefKindDesc {
 
         let cond_var = unsafe {
             let mut cond = Condvar::new();
-            cond.init();
+            // cond.init();
             cond
         };
 

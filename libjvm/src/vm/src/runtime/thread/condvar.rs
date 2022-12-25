@@ -40,7 +40,7 @@ impl Condvar {
         target_os = "android",
         target_os = "hermit"
     ))]
-    pub unsafe fn init(&mut self) {}
+    // pub unsafe fn init(&mut self) {}
 
     #[cfg(not(any(
         target_os = "macos",
@@ -51,7 +51,7 @@ impl Condvar {
     )))]
     pub unsafe fn init(&mut self) {
         use std::mem;
-        let mut attr: libc::pthread_condattr_t = mem::uninitialized();
+        let mut attr = mem::MaybeUninit::<libc::pthread_condattr_t>::uninit().assume_init();
         let r = libc::pthread_condattr_init(&mut attr);
         assert_eq!(r, 0);
         let r = libc::pthread_condattr_setclock(&mut attr, libc::CLOCK_MONOTONIC);

@@ -8,8 +8,8 @@ edition = "2018"
 
 [dependencies]
 clap = "2.33.1"
-classfile = { path = "../../crates/classfile", version = "0.1.0" }
-class-parser = { path = "../../crates/class-parser", version = "0.1.0" }
+classfile = { path = "../../libjvm/src/classfile", version = "0.1.0" }
+class-parser = { path = "../../libjvm/src/class-parser", version = "0.1.0" }
 time = "0.2.16"
 env_logger = "0.7.1"
 handlebars = "3.0.1"

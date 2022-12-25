@@ -1,15 +1,15 @@
-[workspace]
-members = [
-  "jvm",
-  "libjvm",
-  "crates/classfile",
-  "crates/class-parser",
-  "crates/vm",
-  "tools/javap"
-]
-
-#https://doc.rust-lang.org/cargo/reference/profiles.html
-[profile.release]
-lto = "fat"
-codegen-units = 1
-panic = "abort"
+#[workspace]
+#members = [
+#  "jvm",
+#  "libjvm",
+#  "libjvm/src/classfile",
+#  "libjvm/src/class-parser",
+#    "libjvm/src/vm",
+#  "tools/javap"
+#]
+#
+##https://doc.rust-lang.org/cargo/reference/profiles.html
+#[profile.release]
+#lto = "fat"
+#codegen-units = 1
+#panic = "abort"

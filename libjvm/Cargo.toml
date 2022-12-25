@@ -2,22 +2,29 @@
 name = "libjvm"
 version = "0.1.0"
 authors = ["Лач <iam@lach.pw>"]
-edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+edition = "2021"
 
 [dependencies]
-jni-sys = "0.3.0"
-libc = "0.2.68"
-lazy_static = "1.4.0"
-vm = { path = "../crates/vm", version = "0.1.0" }
+common = { path = "src/common" }
 
 [lib]
 name = "jvm"
 crate-type = ["cdylib"]
+path = "src/common"
 
 [profile.dev]
 panic = "abort"
 
 [profile.release]
 panic = "abort"
+
+[workspace]
+members = [
+    "src/class-parser",
+    "src/class-verification",
+    "src/classfile",
+    "src/common",
+    "src/jni",
+    "src/jni/systest",
+    "src/vm"
+]

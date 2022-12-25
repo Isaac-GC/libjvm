@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![allow(unused)]
 
 use crate::native::java_lang_Class;
 use crate::oop::{self, Class, Oop, OopPtr};
