@@ -5,15 +5,15 @@
 
 use jni_sys::{jboolean, jint, jsize, JNIInvokeInterface_, JNINativeInterface_, JavaVM};
 use lazy_static::lazy_static;
-use libc::c_void;
+// use libc::c_void;
+use std::ffi::{c_void, c_char, CStr};
 use std::cell::RefCell;
 use std::sync::Mutex;
 use vm::runtime::thread::MainThread;
 
 use crate::native;
 
-#[no_mangle]
-extern "C" fn JNI_GetDefaultJavaVMInitArgs(args: *mut c_void) -> jint {
+fn JNI_GetDefaultJavaVMInitArgs(args: *mut c_void) -> jint {
 	0
 }
 
@@ -21,8 +21,9 @@ extern "C" fn JNI_GetDefaultJavaVMInitArgs(args: *mut c_void) -> jint {
 struct VMHolder {
 	jvm: Box<JNIInvokeInterface_>,
 }
-unsafe impl Send for VMHolder {}
-unsafe impl Sync for VMHolder {}
+
+impl Send for VMHolder {}
+impl Sync for VMHolder {}
 
 impl VMHolder {
 	fn inner(&self) -> JavaVM {
@@ -35,26 +36,28 @@ lazy_static! {
 	static ref JVM: Mutex<Option<VMHolder>> = Mutex::new(None);
 }
 
-unsafe extern "system" fn DestroyJavaVM(_vm: *mut JavaVM) -> jint {
+fn DestroyJavaVM(_vm: *mut JavaVM) -> jint {
 	todo!();
 }
-unsafe extern "system" fn AttachCurrentThread(
+fn AttachCurrentThread(
 	_vm: *mut JavaVM,
 	_penv: *mut *mut c_void,
 	_args: *mut c_void,
 ) -> jint {
 	todo!();
 }
-unsafe extern "system" fn DetachCurrentThread(_vm: *mut JavaVM) -> jint {
+
+pub fn DetachCurrentThread(_vm: *mut JavaVM) -> jint {
 	todo!();
 }
-unsafe extern "system" fn GetEnv(
+
+pub fn GetEnv(
 	_vm: *mut JavaVM,
 	penv: *mut *mut core::ffi::c_void,
 	_version: jint,
 ) -> jint {
 	use std::ptr::null_mut;
-	*penv = Box::into_raw(Box::new(JNINativeInterface_ {
+	penv = Box::into_raw(Box::new(JNINativeInterface_ {
 		reserved0: null_mut(),
 		reserved1: null_mut(),
 		reserved2: null_mut(),
@@ -291,7 +294,8 @@ unsafe extern "system" fn GetEnv(
 	})) as *mut core::ffi::c_void;
 	0
 }
-unsafe extern "system" fn AttachCurrentThreadAsDaemon(
+
+pub fn AttachCurrentThreadAsDaemon(
 	_vm: *mut JavaVM,
 	_penv: *mut *mut c_void,
 	_args: *mut c_void,
@@ -301,12 +305,12 @@ unsafe extern "system" fn AttachCurrentThreadAsDaemon(
 
 #[repr(C)]
 struct JavaVMOption {
-	option_string: *const libc::c_void,
-	extra_info: *const libc::c_void,
+	option_string: *const c_void,
+	extra_info: *const c_void,
 }
 impl JavaVMOption {
-	fn string(&self) -> &std::ffi::CStr {
-		unsafe { std::ffi::CStr::from_ptr(self.option_string as *const _) }
+	fn string(&self) -> &CStr {
+		unsafe { CStr::from_ptr(self.option_string as *const _) }
 	}
 }
 impl std::fmt::Debug for JavaVMOption {
@@ -320,11 +324,11 @@ impl std::fmt::Debug for JavaVMOption {
 #[repr(C)]
 struct JavaVMInitArgs {
 	version: jint,
-
 	n_options: jint,
 	options: *const JavaVMOption,
 	ignore_unrecognized: jboolean,
 }
+
 impl JavaVMInitArgs {
 	fn options(&self) -> &[JavaVMOption] {
 		unsafe { std::slice::from_raw_parts(self.options, self.n_options as usize) }
@@ -341,8 +345,7 @@ impl std::fmt::Debug for JavaVMInitArgs {
 	}
 }
 
-#[no_mangle]
-extern "C" fn JNI_CreateJavaVM(
+pub fn JNI_CreateJavaVM(
 	pvm: *mut *mut JavaVM,
 	penv: *mut *mut c_void,
 	args: *const JavaVMInitArgs,
@@ -386,17 +389,15 @@ extern "C" fn JNI_CreateJavaVM(
 				AttachCurrentThreadAsDaemon: Some(AttachCurrentThreadAsDaemon),
 			}),
 		};
-		unsafe {
-			*pvm = Box::into_raw(Box::new(holder.inner()));
-			holder.jvm.GetEnv.unwrap()(&mut holder.inner(), penv, 0);
-		}
+
+		pvm = Box::into_raw(Box::new(holder.inner()));
+		holder.jvm.GetEnv.unwrap()(&mut holder.inner(), penv, 0);
 		lock.replace(holder);
 		0
 	}
 }
 
-#[no_mangle]
-extern "C" fn JNI_GetCreatedJavaVMs(
+pub fn JNI_GetCreatedJavaVMs(
 	vm_buf: *mut *mut JavaVM,
 	buf_len: jsize,
 	n_vms: *mut jsize,
@@ -404,20 +405,14 @@ extern "C" fn JNI_GetCreatedJavaVMs(
 	if buf_len >= 1 {
 		let lock = JVM.lock().expect("jvm lock");
 		if let Some(ref holder) = lock.as_ref() {
-			unsafe {
-				*vm_buf = Box::into_raw(Box::new(holder.jvm.as_ref()));
-				*n_vms = 1;
-			}
+				vm_buf = Box::into_raw(Box::new(holder.jvm.as_ref()));
+				n_vms = 1;
 		} else {
-			unsafe {
-				*n_vms = 0;
-			}
+				n_vms = 0;
 		}
 		1
 	} else {
-		unsafe {
-			*n_vms = 0;
-		};
+		n_vms = 0;
 		0
 	}
 }

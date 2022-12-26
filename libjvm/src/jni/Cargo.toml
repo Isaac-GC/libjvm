@@ -11,7 +11,7 @@ categories = ["external-ffi-bindings"]
 keywords = ["java", "jni"]
 
 [dependencies]
-systest = { path = "./systest" }
+#systest = { path = "./systest" }
 
 #[workspace]
 #members = [

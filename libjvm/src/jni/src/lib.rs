@@ -1,8 +1,7 @@
 #![doc(html_root_url="https://docs.rs/jni-sys/0.3.0")]
 #![allow(non_snake_case, non_camel_case_types)]
 
-use std::os::raw::c_void;
-use std::os::raw::c_char;
+use std::ffi::{c_void, c_char};
 
 // FIXME is this sufficiently correct?
 pub type va_list = *mut c_void;

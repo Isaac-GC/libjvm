@@ -176,12 +176,13 @@ dependencies = [
 
 [[package]]
 name = "ctest"
-version = "0.1.7"
+version = "0.2.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e57f9da6e5de2adcf2b9fc9eb852c23d0ed106f971ed75bdfebad9f14bc3a445"
+checksum = "28867572096027a9be9d194ae2f99dcbfa03f1c81141d4f44a62d68f8ee3b9f0"
 dependencies = [
  "cc",
- "syntex_syntax",
+ "rustc_version",
+ "syntex_syntax2",
 ]
 
 [[package]]
@@ -321,9 +322,6 @@ checksum = "fad582f4b9e86b6caa621cabeb0963332d92eea04729ab12892c2533951e6440"
 [[package]]
 name = "jni-sys"
 version = "0.3.0"
-dependencies = [
- "systest",
-]
 
 [[package]]
 name = "js-sys"
@@ -740,10 +738,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "syntex_syntax"
-version = "0.59.1"
+name = "syntex_syntax2"
+version = "0.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "03815b9f04d95828770d9c974aa39c6e1f6ef3114eb77a3ce09008a0d15dd142"
+checksum = "258814d9936ab6783a399fffdc04ee7be388280ea6f70dc855a2cb7e06cc6650"
 dependencies = [
  "bitflags 0.9.1",
  "extprim",
@@ -761,6 +759,8 @@ name = "systest"
 version = "0.1.0"
 dependencies = [
  "ctest",
+ "jni-sys",
+ "libc",
 ]
 
 [[package]]

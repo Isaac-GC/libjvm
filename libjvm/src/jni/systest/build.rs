@@ -9,11 +9,11 @@ fn main() {
     let windows = target.contains("windows");
 
     let (platform_dir, lib_dir) = if target.contains("linux") {
-        ("linux", "jre/lib/amd64/server")
+        ("linux", "lib/amd64/server")
     } else if target.contains("windows") {
         ("win32", "lib")
     } else if target.contains("darwin") {
-        ("darwin", "jre/lib/server")
+        ("darwin", "lib/server")
     } else {
         panic!("unsupported target");
     };
@@ -35,7 +35,7 @@ fn main() {
     cfg.skip_field(|s, field| {
         s == "jvalue" && field == "_data"
     });
-    cfg.type_name(|s, is_struct| if is_struct && s.ends_with("_") {
+    cfg.type_name(|s, is_struct, _is_union| if is_struct && s.ends_with("_") {
         format!("struct {}", s)
     } else {
         s.to_string()

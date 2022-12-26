@@ -2,14 +2,12 @@
 name = "jvm"
 version = "0.2.0"
 authors = ["douchuan <1843657913@qq.com>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 clap = "3.0.0-beta.1"
-class-parser = { path = "../libjvm/src/class-parser", version = "0.1.0" }
 env_logger = "0.8.2"
-vm = { path = "../libjvm/src/vm", version = "0.1.0" }
+libjvm = { path = "../libjvm" }
 
 [dev-dependencies]
-classfile = { path = "../libjvm/src/classfile", version = "0.1.0" }
-libc = "0.2.71"
+libc = "0.2"

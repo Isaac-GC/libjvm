@@ -2,13 +2,10 @@
 #![allow(unused_variables)]
 #![allow(unused_imports)]
 
-use jni_sys::{
-	jarray, jboolean, jbooleanArray, jbyte, jbyteArray, jchar, jcharArray, jclass, jdouble,
-	jdoubleArray, jfieldID, jfloat, jfloatArray, jint, jintArray, jlong, jlongArray, jmethodID,
-	jobject, jobjectArray, jobjectRefType, jshort, jshortArray, jsize, jstring, jthrowable, jvalue,
-	jweak, JNIEnv, JNIInvokeInterface_, JNINativeInterface_, JNINativeMethod, JavaVM,
-};
-use libc::{c_char, c_void};
+use jni_sys::*;
+
+// use libc::{c_char, c_void};
+use sys::ffi::{c_void, c_char};
 pub type va_list = *mut c_void;
 
 pub unsafe extern "system" fn GetVersion(env: *mut JNIEnv) -> jint {
